@@ -1,0 +1,146 @@
+{
+  "recorded_at_utc": "2026-10-19T13:34:09.087545+00:00",
+  "region": "ap-northeast-1",
+  "model": "qwen.qwen3-32b",
+  "backend_tests": {
+    "passed": 119,
+    "redis_postgres": "real disposable containers",
+    "cloud_adapters": "doubles"
+  },
+  "oci_regression_tests": {
+    "passed": 3
+  },
+  "aws_baseline": {
+    "verified_at_utc": "2026-10-19T13:11:16.421535+00:00",
+    "passed": true,
+    "checks": {
+      "stack_complete": true,
+      "account_budget": true,
+      "account_notifications": true,
+      "account_email": true,
+      "bedrock_budget": true,
+      "bedrock_notifications": true,
+      "bedrock_email": true,
+      "s3_private": true,
+      "s3_versioned": true,
+      "s3_encrypted": true,
+      "ecr_identity": true,
+      "ecr_knowledge": true,
+      "ecr_conversation": true,
+      "ecr_gateway": true,
+      "logs_retention_14_days": true,
+      "mantle_alarms": true
+    }
+  },
+  "aws_extended": {
+    "passed": true,
+    "checks": {
+      "s3_tls_required": true,
+      "s3_reports_expiry_30_days": true,
+      "ecr_identity_untagged_only": true,
+      "ecr_knowledge_untagged_only": true,
+      "ecr_conversation_untagged_only": true,
+      "ecr_gateway_untagged_only": true,
+      "dashboard_mantle_namespace": true
+    },
+    "account_mantle_metrics_last_two_hours": {
+      "Inferences": {
+        "datapoints": 4,
+        "sum": 29.0
+      },
+      "TotalInputTokens": {
+        "datapoints": 4,
+        "sum": 10076.0
+      },
+      "TotalOutputTokens": {
+        "datapoints": 4,
+        "sum": 255.0
+      },
+      "InferenceClientErrors": {
+        "datapoints": 4,
+        "sum": 0.0
+      }
+    },
+    "conversation_image_scans": [
+      {
+        "status": "COMPLETE",
+        "severity_counts": {
+          "HIGH": 3,
+          "MEDIUM": 9,
+          "LOW": 3
+        }
+      }
+    ]
+  },
+  "local_monitoring": {
+    "passed": true,
+    "checks": {
+      "three_services_scraped": true,
+      "finops_alert_rules": true,
+      "live_finops_metric": true,
+      "grafana_dashboard_seven_panels": true,
+      "grafana_datasource_real_values": true,
+      "alertmanager_ready": true,
+      "grafana_requires_login": true
+    }
+  },
+  "live_stack": {
+    "passed": true,
+    "checks": {
+      "gateway": true,
+      "login": true,
+      "real_storage_embedding_index": true,
+      "real_llm_grounded_answer": true,
+      "persistent_history": true,
+      "rebuild_job_done_new_generation": true,
+      "atomic_rebuild_search": true,
+      "delete_excluded_from_new_answers": true
+    },
+    "latencies_seconds": {
+      "upload_to_ready": 14.204,
+      "rag": 3.187
+    },
+    "input_scope": "synthetic documents"
+  },
+  "release_publication": {
+    "passed": true,
+    "ecr": {
+      "conversation": {
+        "image_digest": "sha256:6bc2175f0fc2c5c83613444d235e1b25198b1bfcdaf0089b0f48a0544303a8cc",
+        "local_image_id": "sha256:6bc2175f0fc2c5c83613444d235e1b25198b1bfcdaf0089b0f48a0544303a8cc",
+        "verification_method": "oci_descriptor_digest",
+        "tag": "release-053e5d82d63c4ce6"
+      }
+    },
+    "s3_archive_bytes": 93457920,
+    "s3_sha256_verified": true,
+    "archive_sha256": "053e5d82d63c4ce668ec8f4fdf1ff965d163c6e1e286ece98424d8b21eabbdd6"
+  },
+  "production_image_promotion": {
+    "service": "conversation",
+    "tag": "release-053e5d82d63c4ce6",
+    "scope": "ECR basic OS packages only",
+    "production_promotion_allowed": false,
+    "scans": [
+      {
+        "image_digest": "sha256:8ef99f7fa8d5e02ef9866ffb21c6313ee8e1bd61f91e4406ed248f615cde9bf5",
+        "status": "COMPLETE",
+        "severity_counts": {
+          "HIGH": 3,
+          "MEDIUM": 9,
+          "LOW": 3
+        },
+        "high_or_critical_cves": [
+          "CVE-2026-19499",
+          "CVE-2026-5435",
+          "CVE-2026-85091"
+        ]
+      }
+    ]
+  },
+  "billing_budget_usd": {
+    "account_monthly": 30,
+    "bedrock_monthly": 20,
+    "hard_billing_cap": false
+  }
+}

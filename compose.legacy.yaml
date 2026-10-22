@@ -1,0 +1,261 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: secure-doc-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-secure_doc_agent}
+      POSTGRES_USER: ${POSTGRES_USER:-secure_doc}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
+    ports:
+    - 127.0.0.1:5432:5432
+    volumes:
+    - secure_doc_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+  minio:
+    image: chrislusf/seaweedfs@sha256:4e61d15fd35994cb1e43e1e553dff106794841fd9a99ade2fc8c8bfce4d7872d
+    container_name: secure-doc-minio
+    restart: unless-stopped
+    environment:
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-minioadmin}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:?MINIO_ROOT_PASSWORD must be set}
+      S3_BUCKET: ${OBJECT_STORAGE_BUCKET:-secure-documents}
+    ports:
+    - 127.0.0.1:9000:8333
+    volumes:
+    - secure_doc_minio_data:/data
+    healthcheck:
+      test:
+      - CMD
+      - curl
+      - --silent
+      - --output
+      - /dev/null
+      - http://localhost:8333
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  opensearch:
+    image: opensearchproject/opensearch:3.3.2
+    container_name: secure-doc-opensearch
+    restart: unless-stopped
+    environment:
+      discovery.type: single-node
+      DISABLE_SECURITY_PLUGIN: 'true'
+      bootstrap.memory_lock: 'true'
+      OPENSEARCH_JAVA_OPTS: -Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+    - 127.0.0.1:9200:9200
+    - 127.0.0.1:9600:9600
+    volumes:
+    - secure_doc_opensearch_data:/usr/share/opensearch/data
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - curl -fsS http://localhost:9200/_cluster/health || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 30
+  migrate:
+    build:
+      context: ./backend
+    command:
+    - sh
+    - -c
+    - python -m alembic upgrade head && python -m database.bootstrap
+    restart: 'no'
+    environment: &id001
+      DATABASE_ENABLED: 'true'
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-secure_doc}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-secure_doc_agent}
+      OBJECT_STORAGE_BACKEND: MINIO
+      OBJECT_STORAGE_ENDPOINT_URL: http://minio:8333
+      OBJECT_STORAGE_REGION: ${OBJECT_STORAGE_REGION:-us-east-1}
+      OBJECT_STORAGE_BUCKET: ${OBJECT_STORAGE_BUCKET:-secure-documents}
+      OBJECT_STORAGE_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
+      OBJECT_STORAGE_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      OBJECT_STORAGE_SECURE: 'false'
+      SEARCH_BACKEND: OPENSEARCH
+      OPENSEARCH_URL: http://opensearch:9200
+      OPENSEARCH_USERNAME: ${OPENSEARCH_USERNAME:-}
+      OPENSEARCH_PASSWORD: ${OPENSEARCH_PASSWORD:-}
+      OPENSEARCH_VERIFY_CERTS: ${OPENSEARCH_VERIFY_CERTS:-false}
+      OPENSEARCH_CA_CERTS: ${OPENSEARCH_CA_CERTS:-}
+      OPENSEARCH_INDEX_PREFIX: ${OPENSEARCH_INDEX_PREFIX:-secure-doc}
+      OPENSEARCH_NUMBER_OF_REPLICAS: ${OPENSEARCH_NUMBER_OF_REPLICAS:-0}
+      API_ACCESS_KEY: ${API_ACCESS_KEY}
+      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET:-}
+      AUTH_ACCESS_TOKEN_MINUTES: ${AUTH_ACCESS_TOKEN_MINUTES:-30}
+      ALLOW_LEGACY_API_KEY: ${ALLOW_LEGACY_API_KEY:-false}
+      APP_ENVIRONMENT: ${APP_ENVIRONMENT:-development}
+      LLM_MODEL: ${LLM_MODEL}
+      LLM_API_KEY: ${LLM_API_KEY}
+      LLM_BASE_URL: ${LLM_BASE_URL:-http://host.docker.internal:11434/v1}
+      LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.0}
+      LLM_TIMEOUT_SECONDS: ${LLM_TIMEOUT_SECONDS:-300}
+      LLM_THINKING: ${LLM_THINKING:-false}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2}
+      EMBEDDING_DEVICE: ${EMBEDDING_DEVICE:-cpu}
+      LLM_MAX_CONCURRENCY: ${LLM_MAX_CONCURRENCY:-1}
+      LLM_QUEUE_TIMEOUT_SECONDS: ${LLM_QUEUE_TIMEOUT_SECONDS:-5}
+      DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-5}
+      DATABASE_MAX_OVERFLOW: ${DATABASE_MAX_OVERFLOW:-5}
+      DATABASE_POOL_RECYCLE_SECONDS: ${DATABASE_POOL_RECYCLE_SECONDS:-1800}
+      SOURCE_DIRECTORY: /app/data/source
+      INDEX_DIRECTORY: /app/data/index
+    depends_on:
+      postgres:
+        condition: service_healthy
+  api:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    environment: *id001
+    expose:
+    - '8000'
+    extra_hosts:
+    - host.docker.internal:host-gateway
+    deploy:
+      replicas: ${API_REPLICAS:-1}
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+    volumes:
+    - secure_doc_source:/app/data/source
+    - secure_doc_index:/app/data/index
+    - secure_doc_model_cache:/home/app/.cache/huggingface
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      minio:
+        condition: service_healthy
+      opensearch:
+        condition: service_healthy
+    healthcheck:
+      test:
+      - CMD
+      - python
+      - -c
+      - import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/ready',
+        timeout=5)
+      interval: 15s
+      timeout: 7s
+      retries: 10
+      start_period: 30s
+  worker:
+    build:
+      context: ./backend
+    command:
+    - python
+    - -m
+    - database.worker
+    - --poll-seconds
+    - '2'
+    restart: unless-stopped
+    environment: *id001
+    extra_hosts:
+    - host.docker.internal:host-gateway
+    deploy:
+      replicas: ${WORKER_REPLICAS:-1}
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+    volumes:
+    - secure_doc_source:/app/data/source
+    - secure_doc_index:/app/data/index
+    - secure_doc_model_cache:/home/app/.cache/huggingface
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      minio:
+        condition: service_healthy
+      opensearch:
+        condition: service_healthy
+  gateway:
+    build:
+      context: ./frontend
+      args:
+        NGINX_CONFIG: nginx.legacy.conf
+    restart: unless-stopped
+    ports:
+    - 8000:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test:
+      - CMD
+      - wget
+      - --quiet
+      - --spider
+      - http://127.0.0.1:8000/
+      interval: 15s
+      timeout: 5s
+      retries: 5
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    profiles:
+    - monitoring
+    restart: unless-stopped
+    command:
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --storage.tsdb.path=/prometheus
+    - --web.enable-lifecycle
+    ports:
+    - 127.0.0.1:9090:9090
+    volumes:
+    - ./infra/prometheus.legacy.yml:/etc/prometheus/prometheus.yml:ro
+    - ./infra/prometheus-alerts.yml:/etc/prometheus/rules/secure-doc.yml:ro
+    - secure_doc_prometheus_data:/prometheus
+    depends_on:
+    - alertmanager
+  alertmanager:
+    image: prom/alertmanager:v0.28.1
+    profiles:
+    - monitoring
+    restart: unless-stopped
+    command:
+    - --config.file=/etc/alertmanager/alertmanager.yml
+    - --storage.path=/alertmanager
+    ports:
+    - 127.0.0.1:9093:9093
+    volumes:
+    - ./infra/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    - secure_doc_alertmanager_data:/alertmanager
+  grafana:
+    image: grafana/grafana:12.1.0
+    profiles:
+    - monitoring
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-change-me-before-monitoring}
+    ports:
+    - 127.0.0.1:3000:3000
+    volumes:
+    - secure_doc_grafana_data:/var/lib/grafana
+    - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+    - prometheus
+volumes:
+  secure_doc_postgres_data: null
+  secure_doc_minio_data: null
+  secure_doc_opensearch_data: null
+  secure_doc_source: null
+  secure_doc_index: null
+  secure_doc_model_cache: null
+  secure_doc_prometheus_data: null
+  secure_doc_grafana_data: null
+  secure_doc_alertmanager_data: null

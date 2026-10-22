@@ -1,0 +1,20 @@
+[
+  {
+    "document_id": "doc-001",
+    "title": "문서 관리 규정",
+    "file_name": "document-policy.pdf",
+    "page_count": 12
+  },
+  {
+    "document_id": "doc-002",
+    "title": "개인 정보 처리 지침",
+    "file_name": "privacy-guide.pdf",
+    "page_count": 8
+  },
+  {
+    "document_id": "doc-003",
+    "title": "정보보안 운영 규정",
+    "file_name": "security-policy.pdf",
+    "page_count": 20
+  }
+]

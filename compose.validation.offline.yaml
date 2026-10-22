@@ -1,0 +1,9 @@
+# Use only after an online run has populated this validation project's model cache.
+# Prevent Hub metadata checks from affecting startup and worker measurements.
+services:
+  knowledge:
+    environment:
+      HF_HUB_OFFLINE: "1"
+  knowledge-worker:
+    environment:
+      HF_HUB_OFFLINE: "1"

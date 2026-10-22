@@ -1,0 +1,20 @@
+name: secure-doc-agent-hybrid-validation
+# Isolated project/ports/volumes for real infrastructure acceptance tests.
+# python tools/compose.py --validation ...
+services:
+  postgres:
+    ports: !override ["127.0.0.1:55542:5432"]
+  gateway:
+    ports: !override ["127.0.0.1:18182:8000"]
+  minio:
+    ports: !override ["127.0.0.1:19112:8333"]
+  opensearch:
+    ports: !override ["127.0.0.1:19312:9200"]
+  redis:
+    ports: ["127.0.0.1:16472:6379"]
+  prometheus:
+    ports: !override ["127.0.0.1:29202:9090"]
+  grafana:
+    ports: !override ["127.0.0.1:13102:3000"]
+  alertmanager:
+    ports: !override ["127.0.0.1:29302:9093"]

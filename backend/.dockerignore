@@ -1,0 +1,14 @@
+.git
+.venv
+.venv-load
+.env
+__pycache__
+*.py[cod]
+.pytest_cache
+.ruff_cache
+.vscode
+data/index/*
+evaluation/results.json
+postgresql-install.log
+backups
+load-results

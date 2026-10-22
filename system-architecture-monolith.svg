@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1420" viewBox="0 0 1800 1420"><defs><marker id="blue" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8" fill="#3265d7"/></marker><marker id="green" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8" fill="#168169"/></marker></defs><g font-family="Malgun Gothic, sans-serif">
+<rect x="0" y="0" width="1800" height="1420" rx="0" fill="#f7f9fd" stroke="none"/>
+<text x="65" y="70" font-size="38" fill="#182b45" font-weight="700">SecureDoc Agent</text>
+<text x="65" y="115" font-size="29" fill="#182b45" font-weight="700">현재 시스템 아키텍처</text>
+<rect x="1290" y="40" width="445" height="48" rx="24" fill="#eaf0fc" stroke="none"/>
+<text x="1315" y="72" font-size="20" fill="#3265d7" font-weight="700">모듈형 모놀리스 · API / Worker 분리</text>
+<text x="65" y="151" font-size="18" fill="#61758e" font-weight="400">Docker Compose 기본 구성  ·  코드 기준 2026.10.17</text>
+<rect x="65" y="196" width="30" height="30" rx="9" fill="#e9effa" stroke="none"/>
+<text x="74" y="217" font-size="17" fill="#3265d7" font-weight="700">1</text>
+<text x="109" y="219" font-size="23" fill="#182b45" font-weight="700">사용자 접근</text>
+<text x="109" y="247" font-size="17" fill="#61758e" font-weight="400">브라우저에서 화면과 API에 접근</text>
+<rect x="65" y="270" width="420" height="156" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<rect x="87" y="292" width="52" height="52" rx="14" fill="#3265d712" stroke="none"/>
+<svg x="97" y="302" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3265d7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-monitor" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"></rect><line x1="8" x2="16" y1="21" y2="21"></line><line x1="12" x2="12" y1="17" y2="21"></line></svg>
+<text x="154" y="316" font-size="25" fill="#182b45" font-weight="700">사용자 브라우저</text>
+<text x="154" y="343" font-size="16" fill="#61758e" font-weight="400">React SPA</text>
+<text x="90" y="382" font-size="20" fill="#61758e" font-weight="400">채팅 · 문서 · 관리자 화면</text>
+<rect x="565" y="270" width="510" height="156" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<rect x="587" y="292" width="52" height="52" rx="14" fill="#3265d712" stroke="none"/>
+<svg x="597" y="302" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3265d7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-network" aria-hidden="true"><rect x="16" y="16" width="6" height="6" rx="1"></rect><rect x="2" y="16" width="6" height="6" rx="1"></rect><rect x="9" y="2" width="6" height="6" rx="1"></rect><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"></path><path d="M12 12V8"></path></svg>
+<text x="654" y="316" font-size="25" fill="#182b45" font-weight="700">Nginx Gateway</text>
+<text x="654" y="343" font-size="16" fill="#61758e" font-weight="400">:8000 · 정적 파일 / API 프록시</text>
+<text x="590" y="382" font-size="20" fill="#61758e" font-weight="400">/ → React     /api/* → FastAPI</text>
+<rect x="1155" y="270" width="580" height="156" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<rect x="1177" y="292" width="52" height="52" rx="14" fill="#b6782712" stroke="none"/>
+<svg x="1187" y="302" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#b67827" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot" aria-hidden="true"><path d="M12 8V4H8"></path><rect width="16" height="12" x="4" y="8" rx="2"></rect><path d="M2 14h2"></path><path d="M20 14h2"></path><path d="M15 13v2"></path><path d="M9 13v2"></path></svg>
+<text x="1244" y="316" font-size="25" fill="#182b45" font-weight="700">외부 LLM</text>
+<text x="1244" y="343" font-size="16" fill="#61758e" font-weight="400">Ollama / OpenAI 호환 API</text>
+<text x="1180" y="382" font-size="20" fill="#61758e" font-weight="400">답변 생성 · 관련성 확인 · 근거 검증</text>
+<polyline points="485,345 565,345" fill="none" stroke="#3265d7" stroke-width="2.5" stroke-linejoin="round"  marker-end="url(#blue)"/>
+<rect x="486" y="309" width="90" height="29" rx="7" fill="#f7f9fd" stroke="none"/>
+<text x="494" y="330" font-size="17" fill="#61758e" font-weight="400">HTTP</text>
+<rect x="65" y="472" width="30" height="30" rx="9" fill="#e9effa" stroke="none"/>
+<text x="74" y="493" font-size="17" fill="#3265d7" font-weight="700">2</text>
+<text x="109" y="495" font-size="23" fill="#182b45" font-weight="700">애플리케이션</text>
+<text x="109" y="523" font-size="17" fill="#61758e" font-weight="400">API와 Worker는 동일한 backend/ 코드·이미지·DB 스키마를 공유</text>
+<rect x="65" y="540" width="1670" height="300" rx="24" fill="#edf2fc" stroke="#d5e0f5"/>
+<rect x="95" y="570" width="760" height="205" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<rect x="117" y="592" width="52" height="52" rx="14" fill="#3265d712" stroke="none"/>
+<svg x="127" y="602" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3265d7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-server" aria-hidden="true"><rect width="20" height="8" x="2" y="2" rx="2" ry="2"></rect><rect width="20" height="8" x="2" y="14" rx="2" ry="2"></rect><line x1="6" x2="6.01" y1="6" y2="6"></line><line x1="6" x2="6.01" y1="18" y2="18"></line></svg>
+<text x="184" y="616" font-size="25" fill="#182b45" font-weight="700">FastAPI API</text>
+<text x="184" y="643" font-size="16" fill="#61758e" font-weight="400">요청 처리 · JWT 인증 · VIEWER / EDITOR / ADMIN</text>
+<text x="120" y="682" font-size="20" fill="#61758e" font-weight="400">문서 · 사용자 · 대화 관리</text>
+<text x="120" y="711" font-size="20" fill="#61758e" font-weight="400">질문 임베딩 → OpenSearch 검색 → LangGraph RAG</text>
+<text x="120" y="740" font-size="20" fill="#61758e" font-weight="400">업로드 파일 저장 · DB 작업 및 Outbox 등록</text>
+<rect x="945" y="570" width="760" height="205" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<rect x="967" y="592" width="52" height="52" rx="14" fill="#16816912" stroke="none"/>
+<svg x="977" y="602" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#168169" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-workflow" aria-hidden="true"><rect width="8" height="8" x="3" y="3" rx="2"></rect><path d="M7 11v4a2 2 0 0 0 2 2h4"></path><rect width="8" height="8" x="13" y="13" rx="2"></rect></svg>
+<text x="1034" y="616" font-size="25" fill="#182b45" font-weight="700">Background Worker</text>
+<text x="1034" y="643" font-size="16" fill="#61758e" font-weight="400">PostgreSQL 작업 큐 · 2초 간격 폴링</text>
+<text x="970" y="682" font-size="20" fill="#61758e" font-weight="400">Outbox 처리 → S3 원본 업로드 / 삭제</text>
+<text x="970" y="711" font-size="20" fill="#61758e" font-weight="400">문서 파싱 · 분할 → MiniLM 임베딩</text>
+<text x="970" y="740" font-size="20" fill="#61758e" font-weight="400">검색 인덱스 갱신 · 작업 상태 기록 · 재시도</text>
+<svg x="100" y="795" xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#61758e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-sync" aria-hidden="true"><path d="M9 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v.5"></path><path d="M12 10v4h4"></path><path d="m12 14 1.535-1.605a5 5 0 0 1 8 1.5"></path><path d="M22 22v-4h-4"></path><path d="m22 18-1.535 1.605a5 5 0 0 1-8-1.5"></path></svg>
+<text x="135" y="814" font-size="18" fill="#61758e" font-weight="400">공유 볼륨: 문서 처리용 파일 · 로컬 인덱스 · 모델 캐시</text>
+<polyline points="790,426 790,570" fill="none" stroke="#3265d7" stroke-width="2.5" stroke-linejoin="round"  marker-end="url(#blue)"/>
+<rect x="797" y="433" width="124" height="29" rx="7" fill="#f7f9fd" stroke="none"/>
+<text x="805" y="454" font-size="17" fill="#61758e" font-weight="400">API 요청</text>
+<polyline points="855,625 890,625 890,460 1440,460 1440,426" fill="none" stroke="#3265d7" stroke-width="2.5" stroke-linejoin="round"  marker-end="url(#blue)"/>
+<rect x="1117" y="429" width="107" height="29" rx="7" fill="#f7f9fd" stroke="none"/>
+<text x="1125" y="450" font-size="17" fill="#61758e" font-weight="400">모델 호출</text>
+<rect x="65" y="887" width="30" height="30" rx="9" fill="#e9effa" stroke="none"/>
+<text x="74" y="908" font-size="17" fill="#3265d7" font-weight="700">3</text>
+<text x="109" y="910" font-size="23" fill="#182b45" font-weight="700">데이터 · 검색 · 원본 저장</text>
+<text x="109" y="938" font-size="17" fill="#61758e" font-weight="400">API / Worker 공통 데이터 계층</text>
+<rect x="65" y="960" width="510" height="200" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<rect x="87" y="982" width="52" height="52" rx="14" fill="#7754bf12" stroke="none"/>
+<svg x="97" y="992" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#7754bf" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-database" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5V19A9 3 0 0 0 21 19V5"></path><path d="M3 12A9 3 0 0 0 21 12"></path></svg>
+<text x="154" y="1006" font-size="25" fill="#182b45" font-weight="700">PostgreSQL</text>
+<text x="154" y="1033" font-size="16" fill="#61758e" font-weight="400">업무 데이터 / 큐 · API + Worker 공통</text>
+<text x="90" y="1072" font-size="20" fill="#61758e" font-weight="400">조직 · 사용자 · 문서 · 청크 · 대화 · 인용</text>
+<text x="90" y="1101" font-size="20" fill="#61758e" font-weight="400">Ingestion Job · Transactional Outbox</text>
+<text x="90" y="1130" font-size="20" fill="#61758e" font-weight="400">RLS · 작업 선점 · lease 복구</text>
+<rect x="645" y="960" width="510" height="200" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<rect x="667" y="982" width="52" height="52" rx="14" fill="#3265d712" stroke="none"/>
+<svg x="677" y="992" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3265d7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search" aria-hidden="true"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
+<text x="734" y="1006" font-size="25" fill="#182b45" font-weight="700">OpenSearch</text>
+<text x="734" y="1033" font-size="16" fill="#61758e" font-weight="400">API: 벡터 검색 / Worker: 인덱스 갱신</text>
+<text x="670" y="1072" font-size="20" fill="#61758e" font-weight="400">문서 청크 · 임베딩 벡터</text>
+<text x="670" y="1101" font-size="20" fill="#61758e" font-weight="400">새 physical index 생성 및 검증</text>
+<text x="670" y="1130" font-size="20" fill="#61758e" font-weight="400">alias 원자적 교체</text>
+<rect x="1225" y="960" width="510" height="200" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<rect x="1247" y="982" width="52" height="52" rx="14" fill="#16816912" stroke="none"/>
+<svg x="1257" y="992" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#168169" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path></svg>
+<text x="1314" y="1006" font-size="25" fill="#182b45" font-weight="700">SeaweedFS / S3</text>
+<text x="1314" y="1033" font-size="16" fill="#61758e" font-weight="400">Worker: 원본 업로드 / 삭제</text>
+<text x="1250" y="1072" font-size="20" fill="#61758e" font-weight="400">문서 원본 파일 저장</text>
+<text x="1250" y="1101" font-size="20" fill="#61758e" font-weight="400">SHA-256 무결성 확인</text>
+<text x="1250" y="1130" font-size="20" fill="#61758e" font-weight="400">Compose 서비스명: minio</text>
+<polyline points="545,840 545,960" fill="none" stroke="#3265d7" stroke-width="2.5" stroke-linejoin="round"  marker-end="url(#blue)"/>
+<rect x="554" y="852" width="243" height="29" rx="7" fill="#f7f9fd" stroke="none"/>
+<text x="562" y="873" font-size="17" fill="#61758e" font-weight="400">업무 데이터 / 작업 큐</text>
+<polyline points="900,840 900,960" fill="none" stroke="#3265d7" stroke-width="2.5" stroke-linejoin="round"  marker-end="url(#blue)"/>
+<rect x="909" y="852" width="209" height="29" rx="7" fill="#f7f9fd" stroke="none"/>
+<text x="917" y="873" font-size="17" fill="#61758e" font-weight="400">검색 / 인덱스 갱신</text>
+<polyline points="1480,840 1480,960" fill="none" stroke="#168169" stroke-width="2.5" stroke-linejoin="round"  marker-end="url(#green)"/>
+<rect x="1489" y="852" width="209" height="29" rx="7" fill="#f7f9fd" stroke="none"/>
+<text x="1497" y="873" font-size="17" fill="#168169" font-weight="400">원본 업로드 / 삭제</text>
+<rect x="65" y="1200" width="1670" height="100" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<svg x="90" y="1233" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3265d7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-activity" aria-hidden="true"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"></path></svg>
+<text x="140" y="1237" font-size="21" fill="#182b45" font-weight="700">선택 모니터링</text>
+<text x="140" y="1267" font-size="16" fill="#61758e" font-weight="400">monitoring profile</text>
+<text x="400" y="1255" font-size="21" fill="#3265d7" font-weight="700">API /metrics</text>
+<polyline points="560,1248 630,1248" fill="none" stroke="#3265d7" stroke-width="2.5" stroke-linejoin="round"  marker-end="url(#blue)"/>
+<text x="650" y="1255" font-size="23" fill="#182b45" font-weight="700">Prometheus</text>
+<polyline points="815,1248 885,1248" fill="none" stroke="#3265d7" stroke-width="2.5" stroke-linejoin="round"  marker-end="url(#blue)"/>
+<text x="905" y="1255" font-size="23" fill="#182b45" font-weight="700">Grafana</text>
+<text x="1045" y="1255" font-size="18" fill="#61758e" font-weight="400">시각화</text>
+<polyline points="815,1248 815,1283 1260,1283 1260,1248 1320,1248" fill="none" stroke="#3265d7" stroke-width="2.5" stroke-linejoin="round"  marker-end="url(#blue)"/>
+<text x="1340" y="1255" font-size="23" fill="#182b45" font-weight="700">Alertmanager</text>
+<text x="1540" y="1255" font-size="18" fill="#61758e" font-weight="400">알림</text>
+<text x="65" y="1342" font-size="18" fill="#61758e" font-weight="400">초기 실행: Alembic + Bootstrap → DB 준비 후 API / Worker 시작</text>
+<text x="65" y="1374" font-size="17" fill="#61758e" font-weight="400">로컬 대체: OpenSearch → FAISS · S3 → 로컬 파일 | 임베딩은 백엔드 내부 실행</text>
+<text x="1290" y="1374" font-size="16" fill="#61758e" font-weight="400">Icons: Lucide · ISC / MIT</text>
+</g></svg>

@@ -1,0 +1,5 @@
+# Optional separate CPU-only Ollama process on the Docker host (port 11435).
+services:
+  conversation:
+    environment:
+      LLM_BASE_URL: ${VALIDATION_CPU_LLM_URL:-http://host.docker.internal:11435/v1}

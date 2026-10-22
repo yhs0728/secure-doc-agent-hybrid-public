@@ -1,0 +1,5 @@
+제목: 원격 접속 정책
+원본 출처: security-policy-api
+메타데이터: {"department": "security", "version": "1.0"}
+
+원격 접속에는 회사 승인 단말기와 다중 인증이 필요합니다.

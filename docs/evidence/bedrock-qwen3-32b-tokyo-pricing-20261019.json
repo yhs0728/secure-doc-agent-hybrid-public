@@ -1,0 +1,54 @@
+{
+  "retrieved_at_utc": "2026-10-19T13:29:56.989245+00:00",
+  "source": "AWS Price List Query API GetProducts",
+  "service_code": "AmazonBedrock",
+  "region": "ap-northeast-1",
+  "model": "qwen.qwen3-32b",
+  "endpoint": "bedrock-mantle",
+  "service_tier": "standard",
+  "usd_per_million_tokens": {
+    "output": "0.7300000000",
+    "input": "0.1800000000"
+  },
+  "source_rows": [
+    {
+      "model": "Qwen3 32B",
+      "attributes": {
+        "regionCode": "ap-northeast-1",
+        "inferenceType": "Output tokens",
+        "servicecode": "AmazonBedrock",
+        "provider": "Qwen",
+        "usagetype": "APN1-qwen.qwen3-32b-mantle-output-tokens-standard",
+        "locationType": "AWS Region",
+        "location": "Asia Pacific (Tokyo)",
+        "model": "Qwen3 32B",
+        "service_tier": "standard",
+        "servicename": "Amazon Bedrock",
+        "operation": ""
+      },
+      "unit": "1K tokens",
+      "usd": "0.0007300000",
+      "description": "$0.00073 per 1K token for qwen.qwen3-32b-mantle-output-tokens-standard in Asia Pacific (Tokyo)"
+    },
+    {
+      "model": "Qwen3 32B",
+      "attributes": {
+        "regionCode": "ap-northeast-1",
+        "inferenceType": "Input tokens",
+        "servicecode": "AmazonBedrock",
+        "provider": "Qwen",
+        "usagetype": "APN1-qwen.qwen3-32b-mantle-input-tokens-standard",
+        "locationType": "AWS Region",
+        "location": "Asia Pacific (Tokyo)",
+        "model": "Qwen3 32B",
+        "service_tier": "standard",
+        "servicename": "Amazon Bedrock",
+        "operation": ""
+      },
+      "unit": "1K tokens",
+      "usd": "0.0001800000",
+      "description": "$0.00018 per 1K token for qwen.qwen3-32b-mantle-input-tokens-standard in Asia Pacific (Tokyo)"
+    }
+  ],
+  "scope": "Public list rates; excludes taxes, discounts and other AWS services. Not an invoice."
+}

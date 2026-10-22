@@ -1,0 +1,220 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: secure-doc-config
+data:
+  APP_ENVIRONMENT: "production"
+  DATABASE_ENABLED: "true"
+  OBJECT_STORAGE_BACKEND: "S3"
+  OBJECT_STORAGE_SECURE: "true"
+  SEARCH_BACKEND: "OPENSEARCH"
+  OPENSEARCH_VERIFY_CERTS: "true"
+  OPENSEARCH_CA_CERTS: "/run/secrets/opensearch/ca.crt"
+  ALLOW_LEGACY_API_KEY: "false"
+  EMBEDDING_DEVICE: "cpu"
+  LLM_MAX_CONCURRENCY: "4"
+  LLM_QUEUE_TIMEOUT_SECONDS: "5"
+  DATABASE_POOL_SIZE: "5"
+  DATABASE_MAX_OVERFLOW: "5"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: secure-doc-shared-source
+spec:
+  accessModes: ["ReadWriteMany"]
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: secure-doc-migrate
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: migrate
+          image: secure-doc-agent:latest
+          imagePullPolicy: IfNotPresent
+          command: ["sh", "-c", "python -m alembic upgrade head && python -m database.bootstrap"]
+          envFrom:
+            - configMapRef:
+                name: secure-doc-config
+            - secretRef:
+                name: secure-doc-secrets
+          volumeMounts:
+            - name: opensearch-ca
+              mountPath: /run/secrets/opensearch
+              readOnly: true
+      volumes:
+        - name: opensearch-ca
+          secret:
+            secretName: secure-doc-opensearch-ca
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secure-doc-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: secure-doc-api
+  template:
+    metadata:
+      labels:
+        app: secure-doc-api
+    spec:
+      containers:
+        - name: api
+          image: secure-doc-agent:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: secure-doc-config
+            - secretRef:
+                name: secure-doc-secrets
+          readinessProbe:
+            httpGet:
+              path: /api/v1/ready
+              port: 8000
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          volumeMounts:
+            - name: shared-source
+              mountPath: /app/data/source
+            - name: opensearch-ca
+              mountPath: /run/secrets/opensearch
+              readOnly: true
+      volumes:
+        - name: shared-source
+          persistentVolumeClaim:
+            claimName: secure-doc-shared-source
+        - name: opensearch-ca
+          secret:
+            secretName: secure-doc-opensearch-ca
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: secure-doc-api
+spec:
+  selector:
+    app: secure-doc-api
+  ports:
+    - port: 80
+      targetPort: 8000
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: secure-doc-api
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: secure-doc-api
+  minReplicas: 3
+  maxReplicas: 10
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 65
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 75
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secure-doc-worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: secure-doc-worker
+  template:
+    metadata:
+      labels:
+        app: secure-doc-worker
+    spec:
+      containers:
+        - name: worker
+          image: secure-doc-agent:latest
+          imagePullPolicy: IfNotPresent
+          command: ["python", "-m", "database.worker", "--poll-seconds", "2"]
+          envFrom:
+            - configMapRef:
+                name: secure-doc-config
+            - secretRef:
+                name: secure-doc-secrets
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          volumeMounts:
+            - name: shared-source
+              mountPath: /app/data/source
+            - name: opensearch-ca
+              mountPath: /run/secrets/opensearch
+              readOnly: true
+      volumes:
+        - name: shared-source
+          persistentVolumeClaim:
+            claimName: secure-doc-shared-source
+        - name: opensearch-ca
+          secret:
+            secretName: secure-doc-opensearch-ca
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: secure-doc-worker
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: secure-doc-worker
+  minReplicas: 2
+  maxReplicas: 8
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70

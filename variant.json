@@ -1,0 +1,20 @@
+{
+  "variant": "hybrid",
+  "deployment": "local-aws",
+  "source_repository": "https://github.com/yhs0728/secure-doc-agent",
+  "source_commit": "902ff42",
+  "cloud_resources_created": false,
+  "schema_version": 1,
+  "compose_project": "secure-doc-agent-hybrid",
+  "validation_project": "secure-doc-agent-hybrid-validation",
+  "gateway_url": "http://127.0.0.1:18082",
+  "validation_gateway_url": "http://127.0.0.1:18182",
+  "development_ports": {
+    "gateway": 18082,
+    "postgres": 55442,
+    "s3": 19012,
+    "search": 19212,
+    "frontend": 15172,
+    "validation_gateway": 18182
+  }
+}

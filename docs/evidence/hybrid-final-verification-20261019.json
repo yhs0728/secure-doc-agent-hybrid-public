@@ -1,0 +1,99 @@
+{
+  "recorded_at_utc": "2026-10-19T14:14:11.012507+00:00",
+  "scope": "hybrid active microservices; synthetic-only live inference",
+  "backend": {
+    "tests": 143,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "http_process_smoke": {
+    "passed": true,
+    "real_http_processes": 3,
+    "real_postgres": true,
+    "cloud_adapters": "not invoked"
+  },
+  "frontend": {
+    "production_build": true,
+    "vitest_passed": 2,
+    "chromium_passed": 8,
+    "browser_api_responses": "mocked"
+  },
+  "static_checks": {
+    "ruff": true,
+    "variant": true,
+    "git_diff_check": true
+  },
+  "live_aws_flow": {
+    "passed": true,
+    "checks": {
+      "gateway": true,
+      "login": true,
+      "real_storage_embedding_index": true,
+      "real_llm_grounded_answer": true,
+      "persistent_history": true,
+      "rebuild_job_done_new_generation": true,
+      "atomic_rebuild_search": true,
+      "delete_excluded_from_new_answers": true
+    },
+    "latencies_seconds": {
+      "upload_to_ready": 95.844,
+      "rag": 6.422
+    },
+    "performance_sample_only": true
+  },
+  "aws_configuration": {
+    "verified_at_utc": "2026-10-19T14:07:43.625519+00:00",
+    "passed": true,
+    "checks": {
+      "stack_complete": true,
+      "account_budget": true,
+      "account_notifications": true,
+      "account_policy": true,
+      "account_email": true,
+      "bedrock_budget": true,
+      "bedrock_notifications": true,
+      "bedrock_policy": true,
+      "bedrock_email": true,
+      "s3_private": true,
+      "s3_versioned": true,
+      "s3_encrypted": true,
+      "ecr_identity": true,
+      "ecr_knowledge": true,
+      "ecr_conversation": true,
+      "ecr_gateway": true,
+      "logs_retention_14_days": true,
+      "mantle_alarms": true
+    }
+  },
+  "local_monitoring": {
+    "passed": true,
+    "checks": {
+      "three_services_scraped": true,
+      "finops_alert_rules": true,
+      "live_finops_metric": true,
+      "grafana_dashboard_seven_panels": true,
+      "grafana_datasource_real_values": true,
+      "alertmanager_ready": true,
+      "grafana_requires_login": true
+    }
+  },
+  "secret_scan": {
+    "candidate_files_at_scan": 320,
+    "configured_secret_values_checked": 12,
+    "findings": 0
+  },
+  "remaining_risks": [
+    "Previously published ECR image has three HIGH OS-package findings without a Debian stable fix on review date; production promotion check fails.",
+    "No local-vs-cloud quality superiority benchmark, host HA, VPN or PrivateLink validation."
+  ],
+  "fixes": [
+    "Redact model parser error output from application logs",
+    "Count partial or invalid token usage as incomplete",
+    "Reject invalid output reservations before touching Redis",
+    "Verify exact budget scope and notification thresholds",
+    "Create missing S3-compatible bucket only for HTTP 404",
+    "Add portable isolated backend and HTTP smoke runner",
+    "Add frontend CI and backend static checks"
+  ]
+}

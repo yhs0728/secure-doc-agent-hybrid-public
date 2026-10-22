@@ -1,0 +1,84 @@
+name: Microservice boundaries and builds
+on:
+  pull_request:
+    paths:
+      - 'microservices/**'
+      - 'infra/database/**'
+      - 'infra/redis/**'
+      - 'compose.yaml'
+      - 'compose.bedrock.yaml'
+      - 'tools/**'
+      - '.github/workflows/microservices.yml'
+  push:
+    paths:
+      - 'microservices/**'
+      - 'infra/database/**'
+      - 'infra/redis/**'
+      - 'compose.yaml'
+      - 'compose.bedrock.yaml'
+      - 'tools/**'
+      - '.github/workflows/microservices.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  contracts-and-isolation:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: test_admin
+          POSTGRES_PASSWORD: disposable-test-password
+          POSTGRES_DB: secure_doc_micro_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U test_admin -d secure_doc_micro_test"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      MICROSERVICES_TEST_DSN: host=127.0.0.1 port=5432 dbname=secure_doc_micro_test user=test_admin password=disposable-test-password
+      MICROSERVICES_TEST_REDIS_PASSWORD: disposable_redis_test_secret_with_32_characters
+      MICROSERVICES_TEST_REDIS_PORT: '6379'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Install test dependencies without the embedding runtime
+        run: >-
+          pip install -r microservices/conversation/requirements.txt
+          python-multipart==0.0.32 boto3==1.43.111 opensearch-py==3.2.0
+          pypdf==6.19.0 python-docx==1.2.0 pytest==9.1.1 pyyaml python-dotenv ruff
+      - name: Start isolated Redis for real concurrency tests
+        run: docker run -d --name test-redis -p 6379:6379 redis:8-alpine redis-server --requirepass disposable_redis_test_secret_with_32_characters
+      - name: Wait for Redis
+        shell: python
+        run: |
+          import os, time, redis
+          client = redis.Redis(host="127.0.0.1", port=6379,
+                               password=os.environ["MICROSERVICES_TEST_REDIS_PASSWORD"],
+                               socket_connect_timeout=1, socket_timeout=1)
+          for attempt in range(20):
+              try:
+                  client.ping()
+                  break
+              except redis.RedisError:
+                  time.sleep(1)
+          else:
+              raise SystemExit("Redis did not become ready")
+      - run: ruff check microservices tools
+      - run: python -m pytest microservices/tests -q
+      - run: python tools/smoke_microservices.py
+      - run: python tools/prepare_microservices_env.py
+      - run: docker compose --env-file .env.microservices config --quiet
+
+  build-service:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [identity, knowledge, conversation]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build isolated service image
+        run: docker build -t secure-doc/${{ matrix.service }}:ci ./microservices/${{ matrix.service }}

@@ -1,0 +1,57 @@
+groups:
+  - name: secure-doc-services
+    rules:
+      - alert: SecureDocServiceDown
+        expr: up{job=~"identity|knowledge|conversation"} == 0
+        for: 2m
+        labels: {severity: critical}
+        annotations:
+          summary: "SecureDoc service {{ $labels.job }} is unavailable"
+      - alert: SecureDocServiceErrors
+        expr: sum by (service) (rate(secure_doc_service_requests_total{status=~"5.."}[5m])) / clamp_min(sum by (service) (rate(secure_doc_service_requests_total[5m])), 0.001) > 0.05
+        for: 5m
+        labels: {severity: warning}
+        annotations:
+          summary: "SecureDoc {{ $labels.service }} error ratio exceeds 5%"
+      - alert: SecureDocKnowledgeQueueStalled
+        expr: secure_doc_knowledge_oldest_job_seconds > 600
+        for: 5m
+        labels: {severity: warning}
+        annotations:
+          summary: "Knowledge processing has an unfinished job older than ten minutes"
+      - alert: SecureDocKnowledgeJobFailed
+        expr: secure_doc_knowledge_unresolved_jobs > 0
+        for: 2m
+        labels: {severity: warning}
+        annotations:
+          summary: "Knowledge jobs exhausted automatic retries"
+      - alert: SecureDocAdmissionUnavailable
+        expr: secure_doc_admission_available == 0
+        for: 1m
+        labels: {severity: critical}
+        annotations:
+          summary: "Shared RAG admission is unavailable; new generation requests are blocked"
+      - alert: SecureDocCloudInferenceCircuitOpen
+        expr: secure_doc_hybrid_circuit_open == 1
+        for: 1m
+        labels: {severity: warning}
+        annotations:
+          summary: "Cloud inference is isolated; local search remains available"
+      - alert: SecureDocCloudInferenceDegraded
+        expr: sum(rate(secure_doc_hybrid_responses_total{mode="search_only",reason!="external_policy"}[5m])) > 0
+        for: 2m
+        labels: {severity: warning}
+        annotations:
+          summary: "Cloud failures are returning local search excerpts"
+      - alert: SecureDocFinOpsControlUnavailable
+        expr: secure_doc_finops_available == 0
+        for: 1m
+        labels: {severity: critical}
+        annotations:
+          summary: "Shared inference spending control is unavailable"
+      - alert: SecureDocFinOpsDailyUsage
+        expr: secure_doc_finops_calls{period="day"} >= 48
+        for: 1m
+        labels: {severity: warning}
+        annotations:
+          summary: "External inference has used 80% of the default daily call allowance"

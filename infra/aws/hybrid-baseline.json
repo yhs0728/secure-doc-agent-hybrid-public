@@ -1,0 +1,549 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "SecureDoc Hybrid portfolio baseline. No compute, GPU, IAM credentials, VPN or VPC endpoints.",
+  "Parameters": {
+    "BudgetEmail": {
+      "Type": "String",
+      "AllowedPattern": "[^@\\s]+@[^@\\s]+\\.[^@\\s]+"
+    },
+    "MonthlyBudgetUsd": {
+      "Type": "Number",
+      "Default": 30,
+      "MinValue": 1,
+      "MaxValue": 100
+    },
+    "BedrockBudgetUsd": {
+      "Type": "Number",
+      "Default": 20,
+      "MinValue": 1,
+      "MaxValue": 100
+    }
+  },
+  "Resources": {
+    "IdentityRepository": {
+      "Type": "AWS::ECR::Repository",
+      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Retain",
+      "Properties": {
+        "RepositoryName": "secure-doc-hybrid/identity",
+        "ImageTagMutability": "IMMUTABLE",
+        "ImageScanningConfiguration": {
+          "ScanOnPush": true
+        },
+        "EncryptionConfiguration": {
+          "EncryptionType": "AES256"
+        },
+        "LifecyclePolicy": {
+          "LifecyclePolicyText": "{\"rules\": [{\"rulePriority\": 1, \"description\": \"Expire only untagged build leftovers after 14 days\", \"selection\": {\"tagStatus\": \"untagged\", \"countType\": \"sinceImagePushed\", \"countUnit\": \"days\", \"countNumber\": 14}, \"action\": {\"type\": \"expire\"}}]}"
+        },
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "SecureDoc"
+          },
+          {
+            "Key": "Environment",
+            "Value": "portfolio"
+          },
+          {
+            "Key": "ManagedBy",
+            "Value": "CloudFormation"
+          }
+        ]
+      }
+    },
+    "KnowledgeRepository": {
+      "Type": "AWS::ECR::Repository",
+      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Retain",
+      "Properties": {
+        "RepositoryName": "secure-doc-hybrid/knowledge",
+        "ImageTagMutability": "IMMUTABLE",
+        "ImageScanningConfiguration": {
+          "ScanOnPush": true
+        },
+        "EncryptionConfiguration": {
+          "EncryptionType": "AES256"
+        },
+        "LifecyclePolicy": {
+          "LifecyclePolicyText": "{\"rules\": [{\"rulePriority\": 1, \"description\": \"Expire only untagged build leftovers after 14 days\", \"selection\": {\"tagStatus\": \"untagged\", \"countType\": \"sinceImagePushed\", \"countUnit\": \"days\", \"countNumber\": 14}, \"action\": {\"type\": \"expire\"}}]}"
+        },
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "SecureDoc"
+          },
+          {
+            "Key": "Environment",
+            "Value": "portfolio"
+          },
+          {
+            "Key": "ManagedBy",
+            "Value": "CloudFormation"
+          }
+        ]
+      }
+    },
+    "ConversationRepository": {
+      "Type": "AWS::ECR::Repository",
+      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Retain",
+      "Properties": {
+        "RepositoryName": "secure-doc-hybrid/conversation",
+        "ImageTagMutability": "IMMUTABLE",
+        "ImageScanningConfiguration": {
+          "ScanOnPush": true
+        },
+        "EncryptionConfiguration": {
+          "EncryptionType": "AES256"
+        },
+        "LifecyclePolicy": {
+          "LifecyclePolicyText": "{\"rules\": [{\"rulePriority\": 1, \"description\": \"Expire only untagged build leftovers after 14 days\", \"selection\": {\"tagStatus\": \"untagged\", \"countType\": \"sinceImagePushed\", \"countUnit\": \"days\", \"countNumber\": 14}, \"action\": {\"type\": \"expire\"}}]}"
+        },
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "SecureDoc"
+          },
+          {
+            "Key": "Environment",
+            "Value": "portfolio"
+          },
+          {
+            "Key": "ManagedBy",
+            "Value": "CloudFormation"
+          }
+        ]
+      }
+    },
+    "GatewayRepository": {
+      "Type": "AWS::ECR::Repository",
+      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Retain",
+      "Properties": {
+        "RepositoryName": "secure-doc-hybrid/gateway",
+        "ImageTagMutability": "IMMUTABLE",
+        "ImageScanningConfiguration": {
+          "ScanOnPush": true
+        },
+        "EncryptionConfiguration": {
+          "EncryptionType": "AES256"
+        },
+        "LifecyclePolicy": {
+          "LifecyclePolicyText": "{\"rules\": [{\"rulePriority\": 1, \"description\": \"Expire only untagged build leftovers after 14 days\", \"selection\": {\"tagStatus\": \"untagged\", \"countType\": \"sinceImagePushed\", \"countUnit\": \"days\", \"countNumber\": 14}, \"action\": {\"type\": \"expire\"}}]}"
+        },
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "SecureDoc"
+          },
+          {
+            "Key": "Environment",
+            "Value": "portfolio"
+          },
+          {
+            "Key": "ManagedBy",
+            "Value": "CloudFormation"
+          }
+        ]
+      }
+    },
+    "Artifacts": {
+      "Type": "AWS::S3::Bucket",
+      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Retain",
+      "Properties": {
+        "BucketName": {
+          "Fn::Sub": "secure-doc-hybrid-${AWS::AccountId}-${AWS::Region}-artifacts"
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        },
+        "OwnershipControls": {
+          "Rules": [
+            {
+              "ObjectOwnership": "BucketOwnerEnforced"
+            }
+          ]
+        },
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "Id": "AbortIncompleteUploads",
+              "Status": "Enabled",
+              "AbortIncompleteMultipartUpload": {
+                "DaysAfterInitiation": 1
+              }
+            },
+            {
+              "Id": "ExpireReports",
+              "Status": "Enabled",
+              "Prefix": "reports/",
+              "ExpirationInDays": 30,
+              "NoncurrentVersionExpiration": {
+                "NoncurrentDays": 30
+              }
+            }
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "SecureDoc"
+          },
+          {
+            "Key": "Environment",
+            "Value": "portfolio"
+          },
+          {
+            "Key": "ManagedBy",
+            "Value": "CloudFormation"
+          }
+        ]
+      }
+    },
+    "ArtifactPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "Artifacts"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "DenyInsecureTransport",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Action": "s3:*",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "Artifacts",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Sub": "${Artifacts.Arn}/*"
+                }
+              ],
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "OperationsLog": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/securedoc/hybrid/operations",
+        "RetentionInDays": 14,
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "SecureDoc"
+          },
+          {
+            "Key": "Environment",
+            "Value": "portfolio"
+          },
+          {
+            "Key": "ManagedBy",
+            "Value": "CloudFormation"
+          }
+        ]
+      }
+    },
+    "InferencesAlarm": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmName": "secure-doc-hybrid-Inferences",
+        "AlarmDescription": "Account-wide Mantle signal; console alarm only. Application also tracks rejected 429s.",
+        "Namespace": "AWS/BedrockMantle",
+        "MetricName": "Inferences",
+        "Statistic": "Sum",
+        "Period": 3600,
+        "EvaluationPeriods": 1,
+        "Threshold": 100,
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "TreatMissingData": "notBreaching"
+      }
+    },
+    "InferenceClientErrorsAlarm": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmName": "secure-doc-hybrid-InferenceClientErrors",
+        "AlarmDescription": "Account-wide Mantle signal; console alarm only. Application also tracks rejected 429s.",
+        "Namespace": "AWS/BedrockMantle",
+        "MetricName": "InferenceClientErrors",
+        "Statistic": "Sum",
+        "Period": 3600,
+        "EvaluationPeriods": 1,
+        "Threshold": 5,
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "TreatMissingData": "notBreaching"
+      }
+    },
+    "TotalInputTokensAlarm": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmName": "secure-doc-hybrid-TotalInputTokens",
+        "AlarmDescription": "Account-wide Mantle signal; console alarm only. Application also tracks rejected 429s.",
+        "Namespace": "AWS/BedrockMantle",
+        "MetricName": "TotalInputTokens",
+        "Statistic": "Sum",
+        "Period": 3600,
+        "EvaluationPeriods": 1,
+        "Threshold": 500000,
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "TreatMissingData": "notBreaching"
+      }
+    },
+    "Dashboard": {
+      "Type": "AWS::CloudWatch::Dashboard",
+      "Properties": {
+        "DashboardName": "SecureDoc-Hybrid",
+        "DashboardBody": {
+          "Fn::Sub": "{\"widgets\": [{\"type\": \"metric\", \"x\": 0, \"y\": 0, \"width\": 12, \"height\": 6, \"properties\": {\"title\": \"Account Mantle requests and accepted errors\", \"region\": \"${AWS::Region}\", \"view\": \"timeSeries\", \"stat\": \"Sum\", \"period\": 300, \"metrics\": [[\"AWS/BedrockMantle\", \"Inferences\"], [\"AWS/BedrockMantle\", \"InferenceClientErrors\"]]}}, {\"type\": \"metric\", \"x\": 0, \"y\": 6, \"width\": 12, \"height\": 6, \"properties\": {\"title\": \"Account Mantle billable tokens\", \"region\": \"${AWS::Region}\", \"view\": \"timeSeries\", \"stat\": \"Sum\", \"period\": 300, \"metrics\": [[\"AWS/BedrockMantle\", \"TotalInputTokens\"], [\"AWS/BedrockMantle\", \"TotalOutputTokens\"]]}}]}"
+        }
+      }
+    },
+    "AccountBudget": {
+      "Type": "AWS::Budgets::Budget",
+      "Properties": {
+        "Budget": {
+          "BudgetName": "secure-doc-hybrid-account",
+          "BudgetType": "COST",
+          "TimeUnit": "MONTHLY",
+          "BudgetLimit": {
+            "Amount": {
+              "Ref": "MonthlyBudgetUsd"
+            },
+            "Unit": "USD"
+          },
+          "CostTypes": {
+            "IncludeTax": true,
+            "IncludeSupport": true,
+            "UseBlended": false
+          }
+        },
+        "NotificationsWithSubscribers": [
+          {
+            "Notification": {
+              "NotificationType": "ACTUAL",
+              "ComparisonOperator": "GREATER_THAN",
+              "Threshold": 50,
+              "ThresholdType": "PERCENTAGE"
+            },
+            "Subscribers": [
+              {
+                "SubscriptionType": "EMAIL",
+                "Address": {
+                  "Ref": "BudgetEmail"
+                }
+              }
+            ]
+          },
+          {
+            "Notification": {
+              "NotificationType": "ACTUAL",
+              "ComparisonOperator": "GREATER_THAN",
+              "Threshold": 80,
+              "ThresholdType": "PERCENTAGE"
+            },
+            "Subscribers": [
+              {
+                "SubscriptionType": "EMAIL",
+                "Address": {
+                  "Ref": "BudgetEmail"
+                }
+              }
+            ]
+          },
+          {
+            "Notification": {
+              "NotificationType": "ACTUAL",
+              "ComparisonOperator": "GREATER_THAN",
+              "Threshold": 100,
+              "ThresholdType": "PERCENTAGE"
+            },
+            "Subscribers": [
+              {
+                "SubscriptionType": "EMAIL",
+                "Address": {
+                  "Ref": "BudgetEmail"
+                }
+              }
+            ]
+          },
+          {
+            "Notification": {
+              "NotificationType": "FORECASTED",
+              "ComparisonOperator": "GREATER_THAN",
+              "Threshold": 100,
+              "ThresholdType": "PERCENTAGE"
+            },
+            "Subscribers": [
+              {
+                "SubscriptionType": "EMAIL",
+                "Address": {
+                  "Ref": "BudgetEmail"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "BedrockBudget": {
+      "Type": "AWS::Budgets::Budget",
+      "Properties": {
+        "Budget": {
+          "BudgetName": "secure-doc-hybrid-bedrock",
+          "BudgetType": "COST",
+          "TimeUnit": "MONTHLY",
+          "BudgetLimit": {
+            "Amount": {
+              "Ref": "BedrockBudgetUsd"
+            },
+            "Unit": "USD"
+          },
+          "CostTypes": {
+            "IncludeTax": true,
+            "IncludeSupport": true,
+            "UseBlended": false
+          },
+          "CostFilters": {
+            "Service": [
+              "Amazon Bedrock"
+            ]
+          }
+        },
+        "NotificationsWithSubscribers": [
+          {
+            "Notification": {
+              "NotificationType": "ACTUAL",
+              "ComparisonOperator": "GREATER_THAN",
+              "Threshold": 50,
+              "ThresholdType": "PERCENTAGE"
+            },
+            "Subscribers": [
+              {
+                "SubscriptionType": "EMAIL",
+                "Address": {
+                  "Ref": "BudgetEmail"
+                }
+              }
+            ]
+          },
+          {
+            "Notification": {
+              "NotificationType": "ACTUAL",
+              "ComparisonOperator": "GREATER_THAN",
+              "Threshold": 80,
+              "ThresholdType": "PERCENTAGE"
+            },
+            "Subscribers": [
+              {
+                "SubscriptionType": "EMAIL",
+                "Address": {
+                  "Ref": "BudgetEmail"
+                }
+              }
+            ]
+          },
+          {
+            "Notification": {
+              "NotificationType": "ACTUAL",
+              "ComparisonOperator": "GREATER_THAN",
+              "Threshold": 100,
+              "ThresholdType": "PERCENTAGE"
+            },
+            "Subscribers": [
+              {
+                "SubscriptionType": "EMAIL",
+                "Address": {
+                  "Ref": "BudgetEmail"
+                }
+              }
+            ]
+          },
+          {
+            "Notification": {
+              "NotificationType": "FORECASTED",
+              "ComparisonOperator": "GREATER_THAN",
+              "Threshold": 100,
+              "ThresholdType": "PERCENTAGE"
+            },
+            "Subscribers": [
+              {
+                "SubscriptionType": "EMAIL",
+                "Address": {
+                  "Ref": "BudgetEmail"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "IdentityRepository": {
+      "Value": {
+        "Fn::GetAtt": [
+          "IdentityRepository",
+          "RepositoryUri"
+        ]
+      }
+    },
+    "KnowledgeRepository": {
+      "Value": {
+        "Fn::GetAtt": [
+          "KnowledgeRepository",
+          "RepositoryUri"
+        ]
+      }
+    },
+    "ConversationRepository": {
+      "Value": {
+        "Fn::GetAtt": [
+          "ConversationRepository",
+          "RepositoryUri"
+        ]
+      }
+    },
+    "GatewayRepository": {
+      "Value": {
+        "Fn::GetAtt": [
+          "GatewayRepository",
+          "RepositoryUri"
+        ]
+      }
+    },
+    "ArtifactBucket": {
+      "Value": {
+        "Ref": "Artifacts"
+      }
+    }
+  }
+}

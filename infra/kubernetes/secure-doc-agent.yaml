@@ -1,0 +1,427 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: identity-config
+data:
+  DB_HOST: postgres
+  DB_NAME: secure_doc_agent
+  DB_USER: svc_identity
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: identity
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: identity
+    spec:
+      containers:
+      - name: identity
+        image: secure-doc/identity:1.0.0
+        envFrom:
+        - configMapRef:
+            name: identity-config
+        - secretRef:
+            name: identity-secrets
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: '2'
+            memory: 768Mi
+        ports:
+        - containerPort: 8000
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          periodSeconds: 5
+          failureThreshold: 60
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: identity
+spec:
+  selector:
+    app: identity
+  ports:
+  - port: 8000
+    targetPort: 8000
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: knowledge-config
+data:
+  DB_HOST: postgres
+  DB_NAME: secure_doc_agent
+  DB_USER: svc_knowledge
+  IDENTITY_URL: http://identity:8000
+  APP_ENVIRONMENT: production
+  OBJECT_STORAGE_ENDPOINT_URL: https://s3.internal.example
+  OBJECT_STORAGE_BUCKET: secure-documents
+  OPENSEARCH_URL: https://opensearch.internal.example:9200
+  OPENSEARCH_VERIFY_CERTS: 'true'
+  EMBEDDING_DEVICE: cpu
+  CHUNK_SIZE: '500'
+  CHUNK_OVERLAP: '50'
+  HF_HOME: /home/service/.cache/huggingface
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  TOKENIZERS_PARALLELISM: 'false'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: knowledge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: knowledge
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: knowledge
+    spec:
+      containers:
+      - name: knowledge
+        image: secure-doc/knowledge:1.0.0
+        envFrom:
+        - configMapRef:
+            name: knowledge-config
+        - secretRef:
+            name: knowledge-secrets
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: '2'
+            memory: 2Gi
+        ports:
+        - containerPort: 8000
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          periodSeconds: 5
+          failureThreshold: 120
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          periodSeconds: 15
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: knowledge-worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: knowledge-worker
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: knowledge-worker
+    spec:
+      containers:
+      - name: knowledge-worker
+        image: secure-doc/knowledge:1.0.0
+        envFrom:
+        - configMapRef:
+            name: knowledge-config
+        - secretRef:
+            name: knowledge-secrets
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: '2'
+            memory: 2Gi
+        command:
+        - python
+        - -m
+        - knowledge_service.worker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: knowledge
+spec:
+  selector:
+    app: knowledge
+  ports:
+  - port: 8000
+    targetPort: 8000
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: conversation-config
+data:
+  DB_HOST: postgres
+  DB_NAME: secure_doc_agent
+  DB_USER: svc_conversation
+  IDENTITY_URL: http://identity:8000
+  KNOWLEDGE_URL: http://knowledge:8000
+  LLM_BASE_URL: http://llm:11434/v1
+  LLM_MODEL: qwen3:4b-instruct
+  LLM_MAX_CONCURRENCY: '1'
+  LLM_TIMEOUT_SECONDS: '300'
+  CAPACITY_BACKEND: redis
+  REDIS_HOST: redis
+  LLM_SLOT_TTL_SECONDS: '900'
+  RAG_RATE_LIMIT_REQUESTS: '30'
+  RAG_RATE_LIMIT_WINDOW_SECONDS: '60'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: conversation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: conversation
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: conversation
+    spec:
+      containers:
+      - name: conversation
+        image: secure-doc/conversation:1.0.0
+        envFrom:
+        - configMapRef:
+            name: conversation-config
+        - secretRef:
+            name: conversation-secrets
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: '2'
+            memory: 768Mi
+        ports:
+        - containerPort: 8000
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          periodSeconds: 5
+          failureThreshold: 60
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          periodSeconds: 15
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-secrets
+              key: REDIS_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: conversation
+spec:
+  selector:
+    app: conversation
+  ports:
+  - port: 8000
+    targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+      - name: gateway
+        image: secure-doc/web:1.0.0
+        ports:
+        - containerPort: 8000
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8000
+        env:
+        - name: NGINX_ENTRYPOINT_QUIET_LOGS
+          value: '1'
+        - name: NGINX_DNS
+          value: 10.96.0.10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+spec:
+  selector:
+    app: gateway
+  ports:
+  - port: 8000
+    targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-runtime
+data:
+  redis.conf: 'bind 0.0.0.0
+
+    protected-mode yes
+
+    port 6379
+
+    appendonly yes
+
+    appendfsync everysec
+
+    maxmemory 128mb
+
+    maxmemory-policy noeviction
+
+    dir /data
+
+    '
+  start.sh: "#!/bin/sh\nset -eu\numask 077\ncase \"${REDIS_PASSWORD:-}\" in\n  ''|*[!A-Za-z0-9_-]*)\
+    \ echo 'REDIS_PASSWORD must be a nonempty URL-safe secret' >&2; exit 1 ;;\nesac\n\
+    if [ \"${#REDIS_PASSWORD}\" -lt 32 ]; then\n  echo 'REDIS_PASSWORD must contain\
+    \ at least 32 characters' >&2; exit 1\nfi\ncat /etc/secure-doc-redis/redis.conf\
+    \ > /tmp/secure-doc-redis.conf\nprintf '\\nrequirepass %s\\n' \"$REDIS_PASSWORD\"\
+    \ >> /tmp/secure-doc-redis.conf\nexec redis-server /tmp/secure-doc-redis.conf\n"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+spec:
+  clusterIP: None
+  selector:
+    app: redis
+  ports:
+  - port: 6379
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis
+spec:
+  serviceName: redis
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+      containers:
+      - name: redis
+        image: redis:8-alpine
+        command:
+        - sh
+        - /etc/secure-doc-redis/start.sh
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-secrets
+              key: REDIS_PASSWORD
+        - name: REDISCLI_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: redis-secrets
+              key: REDIS_PASSWORD
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - name: config
+          mountPath: /etc/secure-doc-redis
+          readOnly: true
+        - name: data
+          mountPath: /data
+        readinessProbe:
+          exec:
+            command:
+            - redis-cli
+            - ping
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: 128Mi
+            cpu: 50m
+          limits:
+            memory: 256Mi
+            cpu: '1'
+      volumes:
+      - name: config
+        configMap:
+          name: redis-runtime
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi

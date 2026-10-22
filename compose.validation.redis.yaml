@@ -1,0 +1,5 @@
+# Add after the validation/cached overrides to test the real shared admission path.
+services:
+  conversation:
+    environment:
+      CAPACITY_BACKEND: redis

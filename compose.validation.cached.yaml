@@ -1,0 +1,16 @@
+# Optional local fallback: reuses an already-installed legacy dependency layer only.
+# Never use this file for production or CI release images.
+services:
+  knowledge:
+    image: secure-doc-agent-hybrid/knowledge-validation:baseline
+    build:
+      context: ./microservices/knowledge
+      dockerfile: Dockerfile.validation
+  knowledge-worker:
+    image: secure-doc-agent-hybrid/knowledge-validation:baseline
+    build:
+      context: ./microservices/knowledge
+      dockerfile: Dockerfile.validation
+  conversation:
+    environment:
+      CAPACITY_BACKEND: memory

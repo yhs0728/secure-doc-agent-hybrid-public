@@ -1,0 +1,74 @@
+groups:
+  - name: secure-doc-agent
+    rules:
+      - alert: SecureDocApiTargetDown
+        expr: max by (job) (up{job="secure-doc-api"}) == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: SecureDoc API metrics target is down
+
+      - alert: SecureDocHighServerErrorRate
+        expr: |
+          sum(rate(secure_doc_http_requests_total{status=~"5.."}[5m]))
+          /
+          clamp_min(sum(rate(secure_doc_http_requests_total[5m])), 0.001)
+          > 0.01
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: SecureDoc API 5xx rate is above 1%
+
+      - alert: SecureDocHighBackpressureRate
+        expr: sum(rate(secure_doc_http_requests_total{status="429"}[5m])) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: SecureDoc API is returning sustained LLM backpressure
+
+      - alert: SecureDocHighP95Latency
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le) (rate(secure_doc_http_request_duration_seconds_bucket[5m]))
+          ) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: SecureDoc API p95 latency is above two seconds
+
+      - alert: SecureDocDatabasePoolNearCapacity
+        expr: secure_doc_db_pool_checked_out / secure_doc_db_pool_capacity > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: SecureDoc database pool is above 80% utilization
+
+      - alert: SecureDocOutboxBacklog
+        expr: secure_doc_outbox_backlog > 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: SecureDoc outbox events are not draining
+
+      - alert: SecureDocIngestionBacklog
+        expr: secure_doc_ingestion_backlog > 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: SecureDoc ingestion jobs are not draining
+
+      - alert: SecureDocMetricsCollectionFailed
+        expr: secure_doc_metrics_collection_success == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: SecureDoc application metrics cannot query dependencies

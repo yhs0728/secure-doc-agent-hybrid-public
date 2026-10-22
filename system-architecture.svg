@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1520" viewBox="0 0 1800 1520"><defs><marker id="blue" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8" fill="#3265d7"/></marker><marker id="green" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8" fill="#168169"/></marker></defs><g font-family="Malgun Gothic,sans-serif">
+<rect x="0" y="0" width="1800" height="1520" rx="0" fill="#f7f9fd" stroke="none"/>
+<text x="65" y="70" fill="#182b45" font-size="38" font-weight="700">SecureDoc Agent</text>
+<text x="65" y="115" fill="#182b45" font-size="29" font-weight="700">마이크로서비스 아키텍처</text>
+<text x="65" y="153" fill="#61758e" font-size="19" font-weight="400">업무별 독립 이미지 · 전용 DB 계정 · HTTP v1 계약 · 2026.10.17</text>
+<rect x="1245" y="42" width="490" height="45" rx="22" fill="#eaf0fc" stroke="none"/>
+<text x="1265" y="72" fill="#3265d7" font-size="20" font-weight="700">PostgreSQL 1대 / 서비스별 스키마 격리</text>
+<rect x="65" y="220" width="420" height="155" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<rect x="87" y="242" width="50" height="50" rx="13" fill="#3265d712" stroke="none"/>
+<svg x="97" y="252" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#3265d7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-monitor" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"></rect><line x1="8" x2="16" y1="21" y2="21"></line><line x1="12" x2="12" y1="17" y2="21"></line></svg>
+<text x="153" y="265" fill="#182b45" font-size="25" font-weight="700">사용자 브라우저</text>
+<text x="153" y="292" fill="#61758e" font-size="16" font-weight="400">React SPA</text>
+<text x="90" y="335" fill="#61758e" font-size="20" font-weight="400">채팅 · 문서 · 관리자 화면</text>
+<rect x="565" y="220" width="590" height="155" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<rect x="587" y="242" width="50" height="50" rx="13" fill="#3265d712" stroke="none"/>
+<svg x="597" y="252" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#3265d7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-network" aria-hidden="true"><rect x="16" y="16" width="6" height="6" rx="1"></rect><rect x="2" y="16" width="6" height="6" rx="1"></rect><rect x="9" y="2" width="6" height="6" rx="1"></rect><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"></path><path d="M12 12V8"></path></svg>
+<text x="653" y="265" fill="#182b45" font-size="25" font-weight="700">Nginx Gateway :8000</text>
+<text x="653" y="292" fill="#61758e" font-size="16" font-weight="400">경로별 라우팅 · 요청 ID 전달</text>
+<text x="590" y="335" fill="#61758e" font-size="20" font-weight="400">auth → 인증   documents/index → 문서</text>
+<rect x="1235" y="220" width="500" height="155" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<rect x="1257" y="242" width="50" height="50" rx="13" fill="#b6782712" stroke="none"/>
+<svg x="1267" y="252" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#b67827" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot" aria-hidden="true"><path d="M12 8V4H8"></path><rect width="16" height="12" x="4" y="8" rx="2"></rect><path d="M2 14h2"></path><path d="M20 14h2"></path><path d="M15 13v2"></path><path d="M9 13v2"></path></svg>
+<text x="1323" y="265" fill="#182b45" font-size="25" font-weight="700">외부 LLM</text>
+<text x="1323" y="292" fill="#61758e" font-size="16" font-weight="400">Ollama / OpenAI 호환 API</text>
+<text x="1260" y="335" fill="#61758e" font-size="20" font-weight="400">대화 서비스만 모델 호출</text>
+<polyline points="485,295 565,295" fill="none" stroke="#3265d7" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#blue)"/>
+<text x="495" y="280" fill="#61758e" font-size="17" font-weight="400">HTTP</text>
+<polyline points="850,375 850,420 320,420 320,500" fill="none" stroke="#3265d7" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#blue)"/>
+<polyline points="850,420 900,420 900,500" fill="none" stroke="#3265d7" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#blue)"/>
+<polyline points="850,420 1480,420 1480,500" fill="none" stroke="#3265d7" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#blue)"/>
+<text x="65" y="473" fill="#182b45" font-size="22" font-weight="700">독립 업무 서비스</text>
+<rect x="65" y="500" width="510" height="290" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<rect x="87" y="522" width="50" height="50" rx="13" fill="#7754bf12" stroke="none"/>
+<svg x="97" y="532" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#7754bf" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg>
+<text x="153" y="545" fill="#182b45" font-size="25" font-weight="700">Identity</text>
+<text x="153" y="572" fill="#61758e" font-size="16" font-weight="400">microservices/identity · svc_identity</text>
+<text x="90" y="615" fill="#61758e" font-size="20" font-weight="400">사용자 · 로그인 · 최신 Workspace 권한</text>
+<text x="90" y="644" fill="#61758e" font-size="20" font-weight="400">JWT 발급 · 비밀번호 변경 시 토큰 무효화</text>
+<text x="90" y="673" fill="#61758e" font-size="20" font-weight="400">다른 서비스에 사용자 DB / 서명 키 미제공</text>
+<rect x="645" y="500" width="510" height="290" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<rect x="667" y="522" width="50" height="50" rx="13" fill="#16816912" stroke="none"/>
+<svg x="677" y="532" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#168169" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-search" aria-hidden="true"><path d="M10.7 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v4.1"></path><path d="m21 21-1.9-1.9"></path><circle cx="17" cy="17" r="3"></circle></svg>
+<text x="733" y="545" fill="#182b45" font-size="25" font-weight="700">Knowledge</text>
+<text x="733" y="572" fill="#61758e" font-size="16" font-weight="400">microservices/knowledge · svc_knowledge</text>
+<text x="670" y="615" fill="#61758e" font-size="20" font-weight="400">문서 업로드 · 삭제 · 처리 상태 · 검색 API</text>
+<text x="670" y="644" fill="#61758e" font-size="20" font-weight="400">전용 Worker: 파싱 · 임베딩 · 색인</text>
+<text x="670" y="673" fill="#61758e" font-size="20" font-weight="400">자기 DB 큐: lease · 재시도 · Outbox 역할</text>
+<rect x="1225" y="500" width="510" height="290" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<rect x="1247" y="522" width="50" height="50" rx="13" fill="#3265d712" stroke="none"/>
+<svg x="1257" y="532" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#3265d7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-messages-square" aria-hidden="true"><path d="M16 10a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 14.286V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path><path d="M20 9a2 2 0 0 1 2 2v10.286a.71.71 0 0 1-1.212.502l-2.202-2.202A2 2 0 0 0 17.172 19H10a2 2 0 0 1-2-2v-1"></path></svg>
+<text x="1313" y="545" fill="#182b45" font-size="25" font-weight="700">Conversation / RAG</text>
+<text x="1313" y="572" fill="#61758e" font-size="16" font-weight="400">microservices/conversation · svc_conversation</text>
+<text x="1250" y="615" fill="#61758e" font-size="20" font-weight="400">질문 · LangGraph · 답변 / 근거 검증</text>
+<text x="1250" y="644" fill="#61758e" font-size="20" font-weight="400">대화 · 메시지 · 인용 스냅샷 저장</text>
+<text x="1250" y="673" fill="#61758e" font-size="20" font-weight="400">임베딩 / OpenSearch / S3 직접 접근 없음</text>
+<polyline points="1225,730 1155,730" fill="none" stroke="#168169" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#green)"/>
+<text x="1157" y="713" fill="#168169" font-size="16" font-weight="400">v1</text>
+<polyline points="1630,500 1630,375" fill="none" stroke="#3265d7" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#blue)"/>
+<text x="1650" y="455" fill="#61758e" font-size="17" font-weight="400">모델 호출</text>
+<text x="90" y="763" fill="#7754bf" font-size="17" font-weight="400">인증 API  /api/v1/auth/me</text>
+<text x="670" y="763" fill="#168169" font-size="17" font-weight="400">내부 검색·출처 검증  /internal/v1/*</text>
+<text x="1250" y="763" fill="#3265d7" font-size="17" font-weight="400">사용자 Bearer + 서비스 키로 검색 호출</text>
+<text x="65" y="1148" fill="#61758e" font-size="18" font-weight="400">Knowledge와 Conversation은 Identity HTTP API로 권한 확인 · 서비스 간 DB JOIN / FK / 공유 트랜잭션 없음</text>
+<rect x="65" y="925" width="1670" height="200" rx="24" fill="#edf2fc" stroke="#d5e0f5"/>
+<svg x="90" y="945" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#61758e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-database" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5V19A9 3 0 0 0 21 19V5"></path><path d="M3 12A9 3 0 0 0 21 12"></path></svg>
+<text x="135" y="966" fill="#182b45" font-size="23" font-weight="700">PostgreSQL · 물리 서버 1대</text>
+<text x="940" y="966" fill="#61758e" font-size="18" font-weight="400">전용 계정은 자기 스키마만 접근 · 다른 스키마 접근 거부</text>
+<rect x="90" y="990" width="460" height="110" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<text x="112" y="1028" fill="#7754bf" font-size="25" font-weight="700">ms_identity</text>
+<text x="112" y="1067" fill="#61758e" font-size="19" font-weight="400">사용자 · Workspace · membership</text>
+<rect x="670" y="990" width="460" height="110" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<text x="692" y="1028" fill="#168169" font-size="25" font-weight="700">ms_knowledge</text>
+<text x="692" y="1067" fill="#61758e" font-size="19" font-weight="400">문서 · 임시 원본 · durable jobs</text>
+<rect x="1250" y="990" width="460" height="110" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<text x="1272" y="1028" fill="#3265d7" font-size="25" font-weight="700">ms_conversation</text>
+<text x="1272" y="1067" fill="#61758e" font-size="19" font-weight="400">대화 · 메시지 · 인용 스냅샷</text>
+<polyline points="320,790 320,925" fill="none" stroke="#3265d7" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#blue)"/>
+<polyline points="900,790 900,925" fill="none" stroke="#168169" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#green)"/>
+<polyline points="1480,790 1480,925" fill="none" stroke="#3265d7" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#blue)"/>
+<rect x="65" y="1200" width="510" height="170" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<rect x="87" y="1222" width="50" height="50" rx="13" fill="#16816912" stroke="none"/>
+<svg x="97" y="1232" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#168169" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path></svg>
+<text x="153" y="1245" fill="#182b45" font-size="25" font-weight="700">S3 / SeaweedFS</text>
+<text x="153" y="1272" fill="#61758e" font-size="16" font-weight="400">원본 파일 · knowledge 전용 자격 증명</text>
+<text x="90" y="1315" fill="#61758e" font-size="20" font-weight="400">Worker가 저장 / 삭제 · SHA-256 확인</text>
+<rect x="645" y="1200" width="510" height="170" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<rect x="667" y="1222" width="50" height="50" rx="13" fill="#16816912" stroke="none"/>
+<svg x="677" y="1232" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#168169" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search" aria-hidden="true"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
+<text x="733" y="1245" fill="#182b45" font-size="25" font-weight="700">OpenSearch</text>
+<text x="733" y="1272" fill="#61758e" font-size="16" font-weight="400">문서 벡터 · knowledge 전용 자격 증명</text>
+<text x="670" y="1315" fill="#61758e" font-size="20" font-weight="400">전체 재색인: 검증 후 alias 원자적 교체</text>
+<rect x="1225" y="1200" width="510" height="170" rx="20" fill="#fff" stroke="#dfe6f1"/>
+<rect x="1247" y="1222" width="50" height="50" rx="13" fill="#3265d712" stroke="none"/>
+<svg x="1257" y="1232" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#3265d7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-activity" aria-hidden="true"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"></path></svg>
+<text x="1313" y="1245" fill="#182b45" font-size="25" font-weight="700">운영 모니터링</text>
+<text x="1313" y="1272" fill="#61758e" font-size="16" font-weight="400">Prometheus · Grafana · Alertmanager</text>
+<text x="1250" y="1315" fill="#61758e" font-size="20" font-weight="400">서비스별 오류율 · 큐 정체 / 실패 알람</text>
+<polyline points="1155,600 1190,600 1190,880 1760,880 1760,1160 320,1160 320,1200" fill="none" stroke="#168169" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#green)"/>
+<polyline points="900,1160 900,1200" fill="none" stroke="#168169" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#green)"/>
+<text x="65" y="1417" fill="#61758e" font-size="19" font-weight="400">독립 패치: conversation만 재빌드·재시작 가능 · knowledge 패치 시 같은 서비스 API / Worker 함께 교체</text>
+<text x="65" y="1454" fill="#61758e" font-size="18" font-weight="400">공유 인프라 장애는 공통 영향 · 인증 API 장애 시 보호 요청 차단 · 기존 데이터는 별도 이관 후 전환</text>
+<text x="1390" y="1490" fill="#61758e" font-size="16" font-weight="400">Icons: Lucide · ISC / MIT</text>
+</g></svg>
